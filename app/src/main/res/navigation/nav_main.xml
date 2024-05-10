@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/forecastFragment">
+
+    <fragment
+        android:id="@+id/forecastFragment"
+        android:name="ru.netology.weatherapp.fragment.forecast.ForecastFragment"
+        tools:layout="@layout/fragment_forecast">
+        <action
+            android:id="@+id/action_forecastFragment_to_forecastDetailsFragment"
+            app:destination="@id/forecastDetailsFragment" />
+        <action
+            android:id="@+id/action_forecastFragment_to_citiesFragment"
+            app:destination="@id/citiesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/citiesFragment"
+        android:name="ru.netology.weatherapp.fragment.city.CitiesFragment"
+        android:label="@string/choose_city_label"
+        tools:layout="@layout/fragment_cities" />
+
+    <fragment
+        android:id="@+id/forecastDetailsFragment"
+        android:name="ru.netology.weatherapp.fragment.forecastdetails.ForecastDetailsFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_forecast_details" />
+
+</navigation>

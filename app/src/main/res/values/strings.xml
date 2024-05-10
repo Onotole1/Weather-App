@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Weather App</string>
+    <string name="temperature_celsius">%d°C</string>
+    <string name="sunrise">Восход: %s</string>
+    <string name="sunset">Заход: %s</string>
+    <string name="length_day_human">Продолжительность дня: %s</string>
+    <string name="humidity">Влажность: %d%%</string>
+    <string name="pressure">Давление: %d%% мм рт. ст.</string>
+    <string name="temperature_celsius_long">Температура: %d°C</string>
+    <string name="wind">Ветер %s %d м/с</string>
+    <string name="retry">Retry</string>
+    <string name="choose_city_label">Choose city</string>
+    <string name="moscow">Москва</string>
+    <string name="saint_petersburg">Санкт-Петербург</string>
+    <string name="select_city">Select city</string>
+</resources>
