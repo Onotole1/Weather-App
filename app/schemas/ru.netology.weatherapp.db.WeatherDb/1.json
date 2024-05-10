@@ -1,0 +1,331 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "97837d57e380e35089d5abba594be8d1",
+    "entities": [
+      {
+        "tableName": "hour",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hour` INTEGER NOT NULL, `icon` TEXT NOT NULL, `icon_path` TEXT NOT NULL, `date` TEXT NOT NULL, `city` TEXT NOT NULL, `cloud_title` TEXT NOT NULL, `cloud_value` TEXT NOT NULL, `humidity_avg` INTEGER NOT NULL, `humidity_max` INTEGER NOT NULL, `humidity_min` INTEGER NOT NULL, `precipitation_title` TEXT NOT NULL, `precipitation_value` TEXT NOT NULL, `pressure_avg` INTEGER NOT NULL, `pressure_max` INTEGER NOT NULL, `pressure_min` INTEGER NOT NULL, `temperature_avg` INTEGER NOT NULL, `temperature_max` INTEGER NOT NULL, `temperature_min` INTEGER NOT NULL, `wind_direction_title` TEXT NOT NULL, `wind_direction_title_letter` TEXT NOT NULL, `wind_direction_title_short` TEXT NOT NULL, `wind_direction_value` TEXT NOT NULL, `wind_speed_avg` INTEGER NOT NULL, `wind_speed_max` INTEGER NOT NULL, `wind_speed_min` INTEGER NOT NULL, PRIMARY KEY(`hour`, `date`, `city`), FOREIGN KEY(`date`, `city`) REFERENCES `forecast`(`date`, `city`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "hour",
+            "columnName": "hour",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconPath",
+            "columnName": "icon_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forecastDate",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forecastCity",
+            "columnName": "city",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cloud.title",
+            "columnName": "cloud_title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cloud.value",
+            "columnName": "cloud_value",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humidity.avg",
+            "columnName": "humidity_avg",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humidity.max",
+            "columnName": "humidity_max",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humidity.min",
+            "columnName": "humidity_min",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precipitation.title",
+            "columnName": "precipitation_title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precipitation.value",
+            "columnName": "precipitation_value",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pressure.avg",
+            "columnName": "pressure_avg",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pressure.max",
+            "columnName": "pressure_max",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pressure.min",
+            "columnName": "pressure_min",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperature.avg",
+            "columnName": "temperature_avg",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperature.max",
+            "columnName": "temperature_max",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperature.min",
+            "columnName": "temperature_min",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wind.direction.title",
+            "columnName": "wind_direction_title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wind.direction.titleLetter",
+            "columnName": "wind_direction_title_letter",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wind.direction.titleShort",
+            "columnName": "wind_direction_title_short",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wind.direction.value",
+            "columnName": "wind_direction_value",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wind.speed.avg",
+            "columnName": "wind_speed_avg",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wind.speed.max",
+            "columnName": "wind_speed_max",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wind.speed.min",
+            "columnName": "wind_speed_min",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "hour",
+            "date",
+            "city"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_hour_date_city",
+            "unique": false,
+            "columnNames": [
+              "date",
+              "city"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hour_date_city` ON `${TABLE_NAME}` (`date`, `city`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "forecast",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "date",
+              "city"
+            ],
+            "referencedColumns": [
+              "date",
+              "city"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "forecast",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` TEXT NOT NULL, `city` TEXT NOT NULL, `astronomy_length_day_human` TEXT NOT NULL, `astronomy_moon_illuminated` INTEGER NOT NULL, `astronomy_moon_phase` TEXT NOT NULL, `astronomy_sunrise` TEXT NOT NULL, `astronomy_sunset` TEXT NOT NULL, PRIMARY KEY(`date`, `city`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "city",
+            "columnName": "city",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astronomy.lengthDayHuman",
+            "columnName": "astronomy_length_day_human",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astronomy.moonIlluminated",
+            "columnName": "astronomy_moon_illuminated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astronomy.moonPhase",
+            "columnName": "astronomy_moon_phase",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astronomy.sunrise",
+            "columnName": "astronomy_sunrise",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astronomy.sunset",
+            "columnName": "astronomy_sunset",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "date",
+            "city"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_forecast_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_forecast_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_forecast_city",
+            "unique": false,
+            "columnNames": [
+              "city"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_forecast_city` ON `${TABLE_NAME}` (`city`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "city",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `title` TEXT NOT NULL, `title_dative` TEXT, `title_prepositional` TEXT, `selected` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "titleDative",
+            "columnName": "title_dative",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "titlePrepositional",
+            "columnName": "title_prepositional",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "selected",
+            "columnName": "selected",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '97837d57e380e35089d5abba594be8d1')"
+    ]
+  }
+}
