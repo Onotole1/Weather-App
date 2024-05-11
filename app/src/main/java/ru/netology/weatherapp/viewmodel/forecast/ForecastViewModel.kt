@@ -3,13 +3,12 @@ package ru.netology.weatherapp.viewmodel.forecast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import ru.netology.weatherapp.model.City
 import ru.netology.weatherapp.model.Status
 import ru.netology.weatherapp.repository.city.CityRepository
@@ -30,18 +29,19 @@ class ForecastViewModel @Inject constructor(
         loadForecast()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun loadForecast() {
         _state.update { it.copy(status = Status.Loading) }
 
         forecastJob?.cancel()
-        forecastJob = cityRepository.observeSelectedCity()
-            .mapLatest(::loadForecast)
-            .launchIn(viewModelScope)
+        forecastJob = viewModelScope.launch {
+            cityRepository.getSelectedCity()
+                .collectLatest(::loadForecast)
+        }
     }
 
     private suspend fun loadForecast(city: City) {
         runCatching {
+            // Скачиваем закешированный прогноз в первую очередь
             _state.update {
                 it.copy(
                     forecast = forecastRepository.getForecast(
@@ -51,6 +51,7 @@ class ForecastViewModel @Inject constructor(
                 )
             }
 
+            // Затем запрашиваем свежий прогноз
             _state.update {
                 it.copy(
                     forecast = forecastRepository.getForecast(

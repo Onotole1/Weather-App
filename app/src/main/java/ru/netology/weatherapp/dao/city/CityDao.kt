@@ -12,14 +12,8 @@ interface CityDao {
     @Query("SELECT * FROM city")
     suspend fun getCities(): List<CityEntity>
 
-    @Query("SELECT * FROM city WHERE id = :id")
-    suspend fun getCityById(id: Int): CityEntity?
-
     @Query("SELECT * FROM city WHERE selected = 1")
-    suspend fun getSelectedCity(): CityEntity?
-
-    @Query("SELECT * FROM city WHERE selected = 1")
-    fun observeSelectedCity(): Flow<CityEntity?>
+    fun getSelectedCity(): Flow<CityEntity?>
 
     @Query(
         """

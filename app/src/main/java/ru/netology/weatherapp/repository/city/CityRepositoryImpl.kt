@@ -15,11 +15,14 @@ class CityRepositoryImpl @Inject constructor(
     private val citiesApi: CitiesApi,
 ) : CityRepository {
     override suspend fun getCities(): List<City> =
+    // Поскольку новые города в НГС добавляются редко,
+        // в первую очередь вернём из БД
         cityDao.getCities()
             .map {
                 it.toCity()
             }
             .ifEmpty {
+                // Если пусто в БД, скачаем с сервера
                 citiesApi.getCities()
                     .cities.map(CityEntity::fromCityDto)
                     .also {
@@ -28,16 +31,11 @@ class CityRepositoryImpl @Inject constructor(
                     .map(CityEntity::toCity)
             }
 
-    override suspend fun getCityById(cityId: Int): City? = cityDao.getCityById(cityId)?.toCity()
-
     override suspend fun selectCity(cityId: Int) {
         cityDao.selectCityById(cityId)
     }
 
-    override suspend fun getSelectedCity(): City =
-        cityDao.getSelectedCity()?.toCity() ?: City.MOSCOW
-
-    override fun observeSelectedCity(): Flow<City> = cityDao.observeSelectedCity().map {
+    override fun getSelectedCity(): Flow<City> = cityDao.getSelectedCity().map {
         it?.toCity() ?: City.MOSCOW
     }
 }

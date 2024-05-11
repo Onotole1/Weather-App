@@ -12,6 +12,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     repository: CityRepository,
 ) : ViewModel() {
-    val selectedCity = repository.observeSelectedCity()
+    val selectedCity = repository.getSelectedCity()
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 }

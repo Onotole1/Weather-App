@@ -6,6 +6,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import ru.netology.weatherapp.repository.city.CityRepository
@@ -20,7 +21,7 @@ class ForecastDetailsViewModel @AssistedInject constructor(
 ) : ViewModel() {
 
     val forecast = flow {
-        val selectedCity = cityRepository.getSelectedCity()
+        val selectedCity = cityRepository.getSelectedCity().first()
 
         emit(forecastRepository.getForecast(selectedCity.name, date))
     }

@@ -5,6 +5,8 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import ru.netology.weatherapp.dto.forecast.Forecast
+import ru.netology.weatherapp.dto.forecast.Hour
 import java.time.OffsetDateTime
 
 @Entity(
@@ -45,4 +47,23 @@ data class HourEntity(
     val forecastDate: OffsetDateTime,
     @ColumnInfo("city")
     val forecastCity: String
-)
+) {
+    companion object {
+        fun fromHourAndForecast(hour: Hour, forecast: Forecast) =
+            HourEntity(
+                cloud = CloudEmbedded.fromCloud(hour.cloud),
+                hour = hour.hour,
+                humidity = ForecastValueEmbedded.fromForecastValue(hour.humidity),
+                icon = hour.icon,
+                iconPath = hour.iconPath,
+                precipitation = PrecipitationEmbedded.fromPrecipitation(
+                    hour.precipitation
+                ),
+                pressure = ForecastValueEmbedded.fromForecastValue(hour.pressure),
+                temperature = ForecastValueEmbedded.fromForecastValue(hour.temperature),
+                wind = WindEmbedded.fromWind(hour.wind),
+                forecastDate = forecast.date,
+                forecastCity = forecast.links.city,
+            )
+    }
+}

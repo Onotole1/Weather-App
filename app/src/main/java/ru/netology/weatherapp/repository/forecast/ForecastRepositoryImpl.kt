@@ -10,18 +10,8 @@ import ru.netology.weatherapp.dto.forecast.Forecast
 import ru.netology.weatherapp.dto.forecast.ForecastResponse
 import ru.netology.weatherapp.dto.forecast.Hour
 import ru.netology.weatherapp.dto.forecast.Links
-import ru.netology.weatherapp.entity.forecast.AstronomyEmbedded
-import ru.netology.weatherapp.entity.forecast.CloudEmbedded
 import ru.netology.weatherapp.entity.forecast.ForecastEntity
-import ru.netology.weatherapp.entity.forecast.ForecastValueEmbedded
 import ru.netology.weatherapp.entity.forecast.HourEntity
-import ru.netology.weatherapp.entity.forecast.PrecipitationEmbedded
-import ru.netology.weatherapp.entity.forecast.WindEmbedded
-import ru.netology.weatherapp.entity.forecast.fromAstronomy
-import ru.netology.weatherapp.entity.forecast.fromCloud
-import ru.netology.weatherapp.entity.forecast.fromForecastValue
-import ru.netology.weatherapp.entity.forecast.fromPrecipitation
-import ru.netology.weatherapp.entity.forecast.fromWind
 import ru.netology.weatherapp.entity.forecast.toAstronomy
 import ru.netology.weatherapp.entity.forecast.toCloud
 import ru.netology.weatherapp.entity.forecast.toForecastValue
@@ -45,6 +35,7 @@ class ForecastRepositoryImpl @Inject constructor(
 
         val forecasts = db.forecastDao.getForecasts(city)
 
+        // Запрашиваем из БД часы для каждого прогноза параллельно
         return coroutineScope {
             forecasts.map {
                 async { it.toDto() }
@@ -54,38 +45,24 @@ class ForecastRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getForecast(city: String, date: OffsetDateTime): Forecast =
+        // Поскольку нет необходимости в сервере, загружаем локальные данные из БД
         db.forecastDao.getForecast(city, date).toDto()
 
-    private suspend fun writeForecast(forecast: ForecastResponse) {
+    private suspend fun writeForecast(response: ForecastResponse) {
+        // Поскольку используем множество запросов к БД в рамках одной операции,
+        // объединим в транзакцию, чтобы либо все запросы прошли, либо ни одного в случае ошибки
         db.withTransaction {
+            // Очищаем все старые неактуальные записи
             db.forecastDao.clear()
 
-            forecast.forecasts.forEach {
-                db.forecastDao.insertForecast(
-                    ForecastEntity(
-                        astronomy = AstronomyEmbedded.fromAstronomy(it.astronomy),
-                        date = it.date,
-                        city = it.links.city
-                    )
-                )
+            response.forecasts.forEach { forecast ->
+                // Сначала запишем прогноз, чтобы ForeignKey у часов сработал
+                db.forecastDao.insertForecast(ForecastEntity.fromForecast(forecast))
 
+                // Затем запишем каждый час со ссылкой на ForecastEntity
                 db.hourDao.insert(
-                    it.hours.map { hour ->
-                        HourEntity(
-                            cloud = CloudEmbedded.fromCloud(hour.cloud),
-                            hour = hour.hour,
-                            humidity = ForecastValueEmbedded.fromForecastValue(hour.humidity),
-                            icon = hour.icon,
-                            iconPath = hour.iconPath,
-                            precipitation = PrecipitationEmbedded.fromPrecipitation(
-                                hour.precipitation
-                            ),
-                            pressure = ForecastValueEmbedded.fromForecastValue(hour.pressure),
-                            temperature = ForecastValueEmbedded.fromForecastValue(hour.temperature),
-                            wind = WindEmbedded.fromWind(hour.wind),
-                            forecastDate = it.date,
-                            forecastCity = it.links.city,
-                        )
+                    forecast.hours.map { hour ->
+                        HourEntity.fromHourAndForecast(hour, forecast)
                     }
                 )
             }
