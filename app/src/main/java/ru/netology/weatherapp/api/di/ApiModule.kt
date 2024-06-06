@@ -25,7 +25,7 @@ class ApiModule {
     fun provideRetrofit(
         offsetDateTimeGsonAdapter: OffsetDateTimeGsonAdapter,
     ): Retrofit = Retrofit.Builder()
-        .baseUrl("http://pogoda.ngs.ru/api/v1/")
+        .baseUrl("https://pogoda.ngs.ru/api/v1/")
         .client(
             OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
