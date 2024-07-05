@@ -4,21 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.withCreationCallback
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import ru.netology.weatherapp.R
-import ru.netology.weatherapp.databinding.FragmentForecastDetailsBinding
-import ru.netology.weatherapp.extensions.addItemDecoration
-import ru.netology.weatherapp.viewmodel.forecastdetails.ForecastDetailsViewModel
+import ru.netology.weatherapp.ui.theme.ComposeAppTheme
 import ru.netology.weatherapp.viewmodel.forecastdetails.ForecastDetailsViewModelFactory
+import ru.netology.weatherapp.viewmodel.forecastdetails.ForecastDetailsViewModelImpl
 import java.time.OffsetDateTime
 import javax.inject.Inject
 
@@ -41,36 +38,29 @@ class ForecastDetailsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentForecastDetailsBinding.inflate(inflater, container, false)
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            ComposeAppTheme {
+                val viewModel by viewModels<ForecastDetailsViewModelImpl>(
+                    extrasProducer = {
+                        defaultViewModelCreationExtras
+                            .withCreationCallback<ForecastDetailsViewModelFactory> { factory ->
+                                @Suppress("DEPRECATION")
+                                factory.create(
+                                    requireArguments()
+                                        .getSerializable(DATE_EXTRA) as OffsetDateTime
+                                )
+                            }
+                    }
+                )
 
-        val viewModel by viewModels<ForecastDetailsViewModel>(
-            extrasProducer = {
-                defaultViewModelCreationExtras.withCreationCallback<ForecastDetailsViewModelFactory> { factory ->
-                    @Suppress("DEPRECATION")
-                    factory.create(requireArguments().getSerializable(DATE_EXTRA) as OffsetDateTime)
-                }
-            }
-        )
-
-        val adapter = ForecastDetailsAdapter()
-
-        binding.root.adapter = adapter
-
-        val listOffset = resources.getDimensionPixelSize(R.dimen.small_offset)
-        binding.root.addItemDecoration { outRect, view, _, _ ->
-            if (view.id == R.id.item_forecast_details_hour) {
-                outRect.bottom += listOffset
-                outRect.left += listOffset
-                outRect.right += listOffset
+                val context = LocalContext.current
+                ForecastDetailsScreen(
+                    viewModel = viewModel,
+                    remember { ForecastDetailsUiModelMapper(context) },
+                )
             }
         }
-
-        viewModel.forecast.map { it?.let(mapper::map) }
-            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
-            .onEach(adapter::submitList)
-            .launchIn(viewLifecycleOwner.lifecycleScope)
-
-        return binding.root
     }
 }

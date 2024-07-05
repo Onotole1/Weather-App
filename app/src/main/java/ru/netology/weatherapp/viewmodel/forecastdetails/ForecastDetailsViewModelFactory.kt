@@ -5,5 +5,5 @@ import java.time.OffsetDateTime
 
 @AssistedFactory
 interface ForecastDetailsViewModelFactory {
-    fun create(date: OffsetDateTime): ForecastDetailsViewModel
+    fun create(date: OffsetDateTime): ForecastDetailsViewModelImpl
 }

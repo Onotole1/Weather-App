@@ -8,9 +8,6 @@ data class CityUiModel(
     val title: String,
     val selected: Boolean = false,
 ) {
-    data class Payload(
-        val selected: Boolean? = null,
-    )
 
     @KonvertFrom(City::class)
     companion object

@@ -28,7 +28,7 @@ class ForecastUiModelMapper @Inject constructor(@ActivityContext private val con
 
     fun fromList(list: List<Forecast>): List<ForecastUiModel> = list.map(::fromDto)
 
-    private fun createImageUrl(hour: Hour): String = "http:${hour.iconPath}"
+    private fun createImageUrl(hour: Hour): String = "https:${hour.iconPath}"
 
     private fun formatTemperature(context: Context, temperature: ForecastValue): String =
         context.getString(R.string.temperature_celsius, temperature.avg)

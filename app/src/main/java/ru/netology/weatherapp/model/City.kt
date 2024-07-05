@@ -4,8 +4,8 @@ data class City(
     val id: Int,
     val name: String,
     val title: String,
-    val titleDative: String?,
-    val titlePrepositional: String?,
+    val titleDative: String? = null,
+    val titlePrepositional: String? = null,
     val selected: Boolean = false,
 ) {
     companion object {
