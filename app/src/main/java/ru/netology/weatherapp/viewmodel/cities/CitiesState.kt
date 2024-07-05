@@ -1,5 +1,6 @@
 package ru.netology.weatherapp.viewmodel.cities
 
+import androidx.compose.runtime.Immutable
 import ru.netology.weatherapp.model.City
 import ru.netology.weatherapp.model.Status
 
@@ -9,6 +10,7 @@ import ru.netology.weatherapp.model.Status
  * @param cities – загруженные города
  * @param status – статус загрузки городов
  */
+@Immutable
 data class CitiesState(
     val query: String = "",
     val cities: List<City> = emptyList(),
